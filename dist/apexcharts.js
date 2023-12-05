@@ -18341,6 +18341,7 @@
         var w = this.w;
         this.graphics = new Graphics(this.ctx);
         this.bar = new Bar(this.ctx, this.xyRatios);
+        this.borderRadiusWhenStacked = w.config.plotOptions.bar.borderRadiusWhenStacked;
         var coreUtils = new CoreUtils(this.ctx, w);
         series = coreUtils.getLogSeries(series);
         this.yRatio = coreUtils.getLogYRatios(this.yRatio);
@@ -18452,6 +18453,17 @@
               }));
               barHeight = _this.series[i][j] / _this.yRatio[_this.yaxisIndex];
             }
+            // TESTING: Apply rotation for the first stack
+            if (realIndex === 0 && _this.borderRadiusWhenStacked == 'both') {
+              var centerX = x / 2 + barWidth;
+              var centerY = y / 2 + barHeight;
+
+              // Assuming you want to rotate by 180 degrees
+              var rotation = 'rotate(180 ' + centerX + ' ' + centerY + ')';
+              elSeries.node.setAttribute('transform', rotation);
+            }
+            //END TESTING
+
             var barGoalLine = _this.barHelpers.drawGoalLine({
               barXPosition: paths.barXPosition,
               barYPosition: paths.barYPosition,

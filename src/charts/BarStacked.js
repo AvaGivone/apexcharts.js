@@ -16,6 +16,7 @@ class BarStacked extends Bar {
     let w = this.w
     this.graphics = new Graphics(this.ctx)
     this.bar = new Bar(this.ctx, this.xyRatios)
+    this.borderRadiusWhenStacked = w.config.plotOptions.bar.borderRadiusWhenStacked
 
     const coreUtils = new CoreUtils(this.ctx, w)
     series = coreUtils.getLogSeries(series)
@@ -149,6 +150,18 @@ class BarStacked extends Bar {
           })
           barHeight = this.series[i][j] / this.yRatio[this.yaxisIndex]
         }
+        // TESTING: Apply rotation for the first stack
+        if (realIndex === 0 && this.borderRadiusWhenStacked == 'both') {
+          const centerX = x / 2 + barWidth;
+          const centerY = y / 2 + barHeight;
+
+          // Assuming you want to rotate by 180 degrees
+          const rotation = 'rotate(180 ' + centerX + ' ' + centerY + ')';
+          elSeries.node.setAttribute('transform', rotation);
+        }
+        //END TESTING
+
+
 
         const barGoalLine = this.barHelpers.drawGoalLine({
           barXPosition: paths.barXPosition,
@@ -312,16 +325,16 @@ class BarStacked extends Bar {
         bXP =
           this.series[i][j] >= 0
             ? this.groupCtx.prevX[gsi - 1][j] +
-              prevBarW -
-              (this.isReversed ? prevBarW : 0) * 2
+            prevBarW -
+            (this.isReversed ? prevBarW : 0) * 2
             : this.groupCtx.prevX[gsi - 1][j]
       } else if (this.groupCtx.prevXVal[gsi - 1][j] >= 0) {
         bXP =
           this.series[i][j] >= 0
             ? this.groupCtx.prevX[gsi - 1][j]
             : this.groupCtx.prevX[gsi - 1][j] -
-              prevBarW +
-              (this.isReversed ? prevBarW : 0) * 2
+            prevBarW +
+            (this.isReversed ? prevBarW : 0) * 2
       }
 
       barXPosition = bXP
@@ -486,7 +499,7 @@ class BarStacked extends Bar {
         (this.isReversed
           ? this.series[i][j] / this.yRatio[this.yaxisIndex]
           : 0) *
-          2
+        2
     } else {
       // fixes #3610
       y = barYPosition
